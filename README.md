@@ -12,7 +12,7 @@ You have to run `chmod +x unifi_le.sh` to make the file executable.  From there 
 
 ### Is that it?
 
-Well, no, actually.  The script creates a cron job that *should* run 10 minutes after the acme script runs daily-so that when acme.sh renews the certificate, it will be automatically updated on your nginx and unifi configurations.
+Well, no, actually.  The script creates a cron job that *should* run 10 minutes after the acme script runs daily-so that when acme.sh renews the certificate, this script will automatically update the certificates used by nginx and unifi on the UCK.
 
 ### What are the command flags?
 
