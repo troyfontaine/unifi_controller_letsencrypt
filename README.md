@@ -27,3 +27,7 @@ This will re-install the acme certificates and cron jobs after performing a Unif
 #### -c | --cron
 
 This simply reinstalls the cron jobs for ACME.sh and for this script to ensure renewals continue normally.
+
+#### -h | --help
+
+This one doesn't do anything-the flags are new so I haven't had a chance to write the procedure for this one yet.
