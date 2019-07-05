@@ -42,7 +42,7 @@ setup() {
   export CF_Email="$CLOUDFLARE_EMAIL"
 
   # Generate cert (this depends on using a Dynamic DNS-compatible provider
-  if [ -z "$DOMAIN_ALT" ]
+  if [ -z "$FQDN_ALT" ]
   then
     $ACMEDIR/acme.sh --issue --dns dns_cf -d "$FQDN" --force
   else
