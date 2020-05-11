@@ -7,6 +7,47 @@
 ACMEDIR="/root/.acme.sh"
 DOMAINFILE="$ACMEDIR/unifidomain.txt"
 
+use_cloudflare_key() {
+  # Get CloudFlare API Key
+  echo "Type or paste (if using ssh) the CloudFlare API Key to use, followed by [ENTER] - Note, the API key will not be displayed on your screen:"
+
+  read -r -s CLOUDFLARE_KEY
+
+  # Get CloudFlare Email Address
+  echo "Type or paste (if using ssh) the email address for the previously entered CloudFlare API Key, followed by [ENTER]:"
+
+  read -r CLOUDFLARE_EMAIL
+
+  # Export the credentials to the shell-acme will save them to a file when done
+  export CF_Key="$CLOUDFLARE_KEY"
+  export CF_Email="$CLOUDFLARE_EMAIL"
+}
+
+use_cloudflare_token() {
+  echo -e "To configure the token correctly, it must be configured as follows (please note you must be using Acme.sh version 2.8.6 at minimum for this to work):\n- Permissions:\n  - Account: Account Settings:Read\n  - Zone:Zone:Read\n  - Zone:DNS:Edit\n\n- Account Resources:\n  - Include:All Accounts\n\n- Zone Resources:\n  - Include:Specific zone:my_domain.com"
+
+  # Get Cloudflare token
+  echo "Type or paste (if using ssh) the Cloudflare Token to use, followed by [ENTER]"
+
+  read -r -s CLOUDFLARE_TOKEN
+
+  # Get Cloudflare Account ID
+  echo "Type or paste (if using ssh) the Cloudflare Account ID to use, followed by [ENTER]"
+
+  read -r -s CLOUDFLARE_ACCOUNT_ID
+
+  # Get Cloudflare Zone ID
+  echo "Type or paste (if using ssh) the Cloudflare Zone ID to use, followed by [ENTER]"
+
+  read -r -s CLOUDFLARE_ZONE_ID
+
+  # Export the entered values into the environment for Acme to ingest
+  export CF_Token="$CLOUDFLARE_TOKEN"
+  export CF_Account_ID="$CLOUDFLARE_ACCOUNT_ID"
+  export CF_Zone_ID="$CLOUDFLARE_ZONE_ID"
+}
+
+
 setup() {
   # Get acme script and install
   wget -O - https://get.acme.sh | sh
@@ -27,19 +68,13 @@ setup() {
 
   read -r FQDN_ALT
 
-  # Get CloudFlare API Key
-  echo "Type the CloudFlare API Key to use, followed by [ENTER] - Note, the API key will not be displayed on your screen:"
-
-  read -r -s CLOUDFLARE_KEY
-
-  # Get CloudFlare Email Address
-  echo "Type the email address for the previously entered CloudFlare API Key, followed by [ENTER]:"
-
-  read -r CLOUDFLARE_EMAIL
-
-  # Export the credentials to the shell-acme will save them to a file when done
-  export CF_Key="$CLOUDFLARE_KEY"
-  export CF_Email="$CLOUDFLARE_EMAIL"
+  echo -e "Choose Key to use a Cloudflare Account Key OR choose Token to use the new style account Token?"
+  select cfdns in "Key" "Token"; do
+    case $cfdns in
+      Key ) use_cloudflare_key;;
+      Token ) use_cloudflare_token;;
+    esac
+  done
 
   # Generate cert (this depends on using a Dynamic DNS-compatible provider
   if [ -z "$FQDN_ALT" ]
